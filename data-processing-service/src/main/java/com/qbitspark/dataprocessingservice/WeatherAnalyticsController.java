@@ -167,7 +167,7 @@ public class WeatherAnalyticsController {
         Map<String, Object> response = new HashMap<>();
 
         response.put("service", "Weather Analytics Processing");
-        response.put("description", "Apache Spark-powered analytics for Tanzania weather data");
+        response.put("description", "Spring batch-powered analytics for Tanzania weather data");
         response.put("capabilities", java.util.Arrays.asList(
                 "Quarterly weather analytics",
                 "City-wise pattern analysis",

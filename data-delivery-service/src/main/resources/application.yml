@@ -1,0 +1,74 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: data-delivery-service
+
+  # Database Configuration (same as other services)
+  datasource:
+    url: jdbc:postgresql://localhost:5432/weather_data
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      idle-timeout: 300000
+      connection-timeout: 20000
+
+  # JPA Configuration
+  jpa:
+    hibernate:
+      ddl-auto: validate  # Don't modify tables, just read
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+        jdbc:
+          batch_size: 50
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+# Logging Configuration
+logging:
+  level:
+    com.qbitspark.datadeliveryservice: INFO
+    org.hibernate: WARN
+    org.springframework: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# Management and Monitoring
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+# Custom Application Properties for Data Delivery
+app:
+  delivery:
+    # Pagination settings
+    pagination:
+      default-page-size: 50
+      max-page-size: 1000
+
+    # Export settings
+    export:
+      max-records: 10000
+      supported-formats: ["csv", "json"]
+
+    # Caching settings
+    cache:
+      enabled: true
+      duration-minutes: 15
+      max-entries: 1000
+
+    # API settings
+    api:
+      rate-limit: 100
+      cors-enabled: true
