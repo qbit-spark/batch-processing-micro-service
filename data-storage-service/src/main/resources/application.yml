@@ -1,0 +1,89 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: data-storage-service
+
+  # Database Configuration
+  datasource:
+    url: jdbc:postgresql://localhost:5432/weather_data
+    username: weather_user
+    password: weather_pass
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 300000
+      connection-timeout: 20000
+
+  # JPA/Hibernate Configuration
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        jdbc:
+          batch_size: 100
+        order_inserts: true
+        order_updates: true
+        generate_statistics: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  # Kafka Consumer Configuration
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: weather-storage-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      enable-auto-commit: true
+      auto-commit-interval: 1000
+      max-poll-records: 500
+      fetch-min-size: 1
+      fetch-max-wait: 500
+      properties:
+        session.timeout.ms: 30000
+        heartbeat.interval.ms: 3000
+        max.poll.interval.ms: 300000
+
+# Logging Configuration
+logging:
+  level:
+    com.qbitspark.datastorageservice: INFO
+    org.springframework.kafka: WARN
+    org.apache.kafka: WARN
+    org.hibernate.SQL: WARN
+    org.hibernate.type.descriptor.sql.BasicBinder: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# Management and Monitoring
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,env
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    export:
+      simple:
+        enabled: true
+
+# Custom Application Properties
+app:
+  kafka:
+    topics:
+      weather-data: weather-data
+  database:
+    batch-size: 100
+    connection-pool-size: 10
+  monitoring:
+    log-interval: 1000
+    stats-interval: 10000
