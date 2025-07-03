@@ -8,14 +8,9 @@ spring:
   # Database Configuration
   datasource:
     url: jdbc:postgresql://localhost:5432/weather_data
-    username: weather_user
-    password: weather_pass
+    username: postgres
+    password: postgres
     driver-class-name: org.postgresql.Driver
-    hikari:
-      maximum-pool-size: 10
-      minimum-idle: 5
-      idle-timeout: 300000
-      connection-timeout: 20000
 
   # JPA/Hibernate Configuration
   jpa:

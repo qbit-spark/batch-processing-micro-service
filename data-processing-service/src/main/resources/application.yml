@@ -1,0 +1,72 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: data-processing-service
+
+  # Database Configuration (same as storage service)
+  datasource:
+    url: jdbc:postgresql://localhost:5432/weather_data
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      idle-timeout: 300000
+      connection-timeout: 20000
+
+  # JPA Configuration
+  jpa:
+    hibernate:
+      ddl-auto: validate  # Don't modify tables, just read
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  # Batch Configuration
+  batch:
+    job:
+      enabled: false  # Don't auto-run batch jobs
+    jdbc:
+      initialize-schema: never  # Don't create batch tables
+
+# Logging Configuration
+logging:
+  level:
+    com.qbitspark.dataprocessingservice: INFO
+    org.apache.spark: WARN
+    org.eclipse.jetty: WARN
+    org.springframework.batch: WARN
+    org.hibernate: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# Management and Monitoring
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+# Custom Application Properties
+app:
+  analytics:
+    spark:
+      app-name: "Tanzania Weather Data Analytics"
+      master: "local[*]"
+      driver-memory: "2g"
+      executor-memory: "2g"
+    processing:
+      batch-size: 10000
+      parallel-processing: true
+    reporting:
+      cache-enabled: true
+      cache-duration-minutes: 60
